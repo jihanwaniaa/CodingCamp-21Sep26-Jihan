@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense &amp; Budget Visualizer</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- Chart.js v4 via cdnjs CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+            integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+  </head>
+  <body>
+
+    <!-- Browser / storage support error banner -->
+    <div id="browser-error-banner"
+         role="alert"
+         aria-live="polite"
+         class="error-banner hidden">
+      Your browser is not supported. The app cannot run.
+    </div>
+
+    <!-- Storage load error banner -->
+    <div id="storage-error-banner"
+         role="alert"
+         aria-live="polite"
+         class="error-banner hidden">
+      Saved data could not be loaded. Starting with an empty transaction list.
+    </div>
+
+    <div id="app-root">
+
+      <!-- ── Balance Display ──────────────────────────────────────────── -->
+      <header role="banner">
+        <section id="balance-display" aria-label="Total balance">
+          <h1>Total Spending</h1>
+          <p id="balance-amount" aria-live="polite">0.00</p>
+        </section>
+      </header>
+
+      <main role="main">
+
+        <!-- ── Transaction Form ──────────────────────────────────────── -->
+        <section id="transaction-form-section" aria-labelledby="form-heading">
+          <h2 id="form-heading">Add a Transaction</h2>
+
+          <!-- General form-level error (delete failure, etc.) -->
+          <div id="form-error-banner"
+               role="alert"
+               aria-live="polite"
+               class="error-banner hidden"></div>
+
+          <form id="transaction-form" novalidate>
+
+            <!-- Item Name -->
+            <div class="form-field">
+              <label for="item-name">Item Name</label>
+              <input
+                type="text"
+                id="item-name"
+                name="item-name"
+                maxlength="100"
+                autocomplete="off"
+                placeholder="e.g. Lunch"
+                aria-describedby="item-name-error"
+                aria-required="true"
+              />
+              <div id="item-name-error"
+                   role="alert"
+                   aria-live="polite"
+                   class="field-error hidden"></div>
+            </div>
+
+            <!-- Amount -->
+            <div class="form-field">
+              <label for="amount">Amount</label>
+              <input
+                type="number"
+                id="amount"
+                name="amount"
+                min="0.01"
+                max="999999999.99"
+                step="0.01"
+                placeholder="0.00"
+                aria-describedby="amount-error"
+                aria-required="true"
+              />
+              <div id="amount-error"
+                   role="alert"
+                   aria-live="polite"
+                   class="field-error hidden"></div>
+            </div>
+
+            <!-- Category -->
+            <div class="form-field">
+              <label for="category">Category</label>
+              <select id="category"
+                      name="category"
+                      aria-describedby="category-error"
+                      aria-required="true">
+                <option value="">-- Select a category --</option>
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Fun">Fun</option>
+              </select>
+              <div id="category-error"
+                   role="alert"
+                   aria-live="polite"
+                   class="field-error hidden"></div>
+            </div>
+
+            <button type="submit">Add Transaction</button>
+          </form>
+        </section>
+
+        <!-- ── Transaction List ──────────────────────────────────────── -->
+        <section id="transaction-list-section" aria-labelledby="list-heading">
+          <h2 id="list-heading">Transactions</h2>
+          <ul id="transaction-list" aria-live="polite" aria-label="Transaction list">
+            <!-- Populated by renderTransactionList() -->
+          </ul>
+          <p id="transaction-list-empty" class="empty-state" aria-live="polite">
+            No transactions recorded yet.
+          </p>
+        </section>
+
+        <!-- ── Chart ─────────────────────────────────────────────────── -->
+        <section id="chart-section" aria-labelledby="chart-heading">
+          <h2 id="chart-heading">Spending by Category</h2>
+          <div id="chart-container">
+            <div id="chart-canvas-wrapper">
+              <canvas id="chart-canvas"
+                      aria-label="Pie chart showing spending distribution by category"
+                      role="img"></canvas>
+            </div>
+            <p id="chart-empty" class="empty-state" aria-live="polite">
+              No data to visualize yet.
+            </p>
+            <p id="chart-load-error" class="error-banner hidden">
+              Chart could not be loaded.
+            </p>
+          </div>
+        </section>
+
+      </main>
+    </div><!-- /#app-root -->
+
+    <script src="js/app.js" defer></script>
+  </body>
+</html>

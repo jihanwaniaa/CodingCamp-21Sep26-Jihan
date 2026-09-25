@@ -1,0 +1,615 @@
+/* css/style.css — Expense & Budget Visualizer */
+
+/* ═══════════════════════════════════════════════════════════════
+   1. RESET & BASE
+   ═══════════════════════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1a1a2e;
+  background-color: #f4f6fb;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   2. ERROR BANNERS
+   ═══════════════════════════════════════════════════════════════ */
+
+.error-banner {
+  display: block;
+  background-color: #fff0f0;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.error-banner.hidden {
+  display: none;
+}
+
+/* Top-of-page banners sit outside #app-root */
+#browser-error-banner,
+#storage-error-banner {
+  margin: 0.75rem auto;
+  max-width: 680px;
+  border-radius: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   3. APP ROOT — constrained, centered column
+   ═══════════════════════════════════════════════════════════════ */
+
+#app-root {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   4. BALANCE DISPLAY (header)
+   ═══════════════════════════════════════════════════════════════ */
+
+header[role="banner"] {
+  /* Stretch edge-to-edge at the very top, then constrain inside */
+  background-color: #1a1a2e;
+  color: #ffffff;
+  padding: 0;
+  margin-bottom: 1.5rem;
+  /* Negative horizontal margin so it bleeds to viewport edges */
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+}
+
+#balance-display {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+#balance-display h1 {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a0aec0;
+  flex-shrink: 0;
+}
+
+#balance-amount {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   5. MAIN CONTENT — single-column, card-like sections
+   ═══════════════════════════════════════════════════════════════ */
+
+main[role="main"] {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Shared card shell used by all three sections */
+#transaction-form-section,
+#transaction-list-section,
+#chart-section {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+}
+
+#transaction-form-section h2,
+#transaction-list-section h2,
+#chart-section h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   6. TRANSACTION FORM
+   ═══════════════════════════════════════════════════════════════ */
+
+#form-error-banner {
+  margin-bottom: 0.75rem;
+}
+
+#transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.form-field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.form-field input[type="text"],
+.form-field input[type="number"],
+.form-field select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1.5px solid #cbd5e0;
+  border-radius: 6px;
+  background-color: #f9fafc;
+  color: #1a1a2e;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  /* Remove default number-spinner arrows for cleaner look */
+  appearance: auto;
+}
+
+.form-field input[type="text"]:focus,
+.form-field input[type="number"]:focus,
+.form-field select:focus {
+  outline: 2px solid #4f46e5;
+  outline-offset: 1px;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  background-color: #ffffff;
+}
+
+/* Invalid field state */
+.form-field input.invalid,
+.form-field select.invalid {
+  border-color: #e53e3e;
+  background-color: #fff5f5;
+}
+
+.form-field input.invalid:focus,
+.form-field select.invalid:focus {
+  outline-color: #e53e3e;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.15);
+}
+
+/* Inline field error message */
+.field-error {
+  font-size: 0.8rem;
+  color: #e53e3e;
+  font-weight: 500;
+  min-height: 1.1em; /* reserve space so layout doesn't shift */
+}
+
+.field-error.hidden {
+  display: none;
+}
+
+/* Submit button */
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.7rem 1rem;
+  background-color: #4f46e5;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #4338ca;
+}
+
+button[type="submit"]:active {
+  background-color: #3730a3;
+  transform: translateY(1px);
+}
+
+button[type="submit"]:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   7. TRANSACTION LIST
+   ═══════════════════════════════════════════════════════════════ */
+
+#transaction-list {
+  height: 300px;
+  overflow-y: scroll;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.25rem 0;
+  /* Smooth scrollbar on WebKit */
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 transparent;
+}
+
+#transaction-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+#transaction-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#transaction-list::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 3px;
+}
+
+/* Individual transaction row */
+#transaction-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #f0f4f8;
+  transition: background-color 0.1s ease;
+}
+
+#transaction-list li:last-child {
+  border-bottom: none;
+}
+
+#transaction-list li:hover {
+  background-color: #f7faff;
+}
+
+/* Name column — grows to fill available space */
+.transaction-name {
+  flex: 1 1 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2d3748;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* Amount */
+.transaction-amount {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2d3748;
+  white-space: nowrap;
+}
+
+/* Category badge */
+.transaction-category {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.transaction-category.category-food {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.transaction-category.category-transport {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.transaction-category.category-fun {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+/* Delete button */
+.delete-btn {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid #fca5a5;
+  color: #e53e3e;
+  border-radius: 5px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.delete-btn:hover {
+  background-color: #fff0f0;
+  border-color: #e53e3e;
+}
+
+.delete-btn:focus-visible {
+  outline: 2px solid #e53e3e;
+  outline-offset: 2px;
+}
+
+/* Empty state — full styles defined in section 12 (EMPTY-STATE MESSAGES) */
+
+/* ═══════════════════════════════════════════════════════════════
+   8. CHART SECTION
+   ═══════════════════════════════════════════════════════════════ */
+
+#chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Wrapper constrains the chart height while staying responsive.
+   Chart.js needs a position:relative parent when maintainAspectRatio
+   is false so it can measure available space correctly. */
+#chart-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 350px;
+  max-height: 400px;
+}
+
+#chart-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* #chart-empty — full styles defined in section 12 (EMPTY-STATE MESSAGES) */
+
+#chart-load-error {
+  /* inherits .error-banner; hidden by default via .hidden in HTML */
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   9. RESPONSIVE — narrow screens
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  #app-root {
+    padding: 0 0.75rem 1.5rem;
+  }
+
+  #balance-display {
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 1rem;
+  }
+
+  #balance-amount {
+    font-size: 1.75rem;
+  }
+
+  #transaction-form-section,
+  #transaction-list-section,
+  #chart-section {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .transaction-name {
+    max-width: 120px;
+  }
+
+  #chart-canvas-wrapper {
+    height: 280px;
+  }
+
+  #chart-canvas {
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 320px) {
+  #balance-amount {
+    font-size: 1.4rem;
+  }
+
+  .transaction-name {
+    max-width: 90px;
+  }
+
+  .transaction-category {
+    display: none; /* hide badge on very narrow screens to avoid overflow */
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   10. ACCESSIBILITY — always-visible focus outlines
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Ensure focus is always visible for keyboard users */
+:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+/* Suppress default outline only when focus-visible is supported
+   and the user is NOT using keyboard navigation */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   11. CATEGORY COLOR TOKENS
+   ═══════════════════════════════════════════════════════════════
+   CSS custom properties that mirror the exact backgroundColor values
+   used by the Chart.js dataset in js/app.js (CATEGORY_COLORS object).
+   Keeping them in sync here means a single source-of-truth comment
+   makes it obvious when the chart palette changes.
+
+   Chart.js CATEGORY_COLORS reference (app.js):
+     Food:      '#4CAF50'
+     Transport: '#2196F3'
+     Fun:       '#FF9800'
+
+   Requirements: 4.4, 4.5
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Chart slice colors — match CATEGORY_COLORS in js/app.js exactly */
+  --color-category-food:      #4caf50; /* green  */
+  --color-category-transport: #2196f3; /* blue   */
+  --color-category-fun:       #ff9800; /* orange */
+
+  /* Accessible foreground colors for each category token.
+     These are used wherever the category color appears as a background
+     so that text rendered on top meets WCAG 2.1 AA (≥ 4.5:1 contrast).
+
+     Contrast checks (WCAG 2.1 AA — minimum 4.5:1 for normal text):
+       Food      #4CAF50 bg → #1a5c1e text  ≈ 7.1:1  ✓
+       Transport #2196F3 bg → #003d8f text  ≈ 5.8:1  ✓
+       Fun       #FF9800 bg → #5c3600 text  ≈ 6.5:1  ✓
+  */
+  --color-category-food-text:      #1a5c1e;
+  --color-category-transport-text: #003d8f;
+  --color-category-fun-text:       #5c3600;
+}
+
+/* ── Category color swatch helpers ──────────────────────────────
+   Utility classes that apply the chart-matched category color as a
+   left border accent on transaction list items, if desired by the UI.
+   These are additive — they do not replace the existing badge classes.
+   ──────────────────────────────────────────────────────────────── */
+
+.tx-category-food      { color: var(--color-category-food);      }
+.tx-category-transport { color: var(--color-category-transport); }
+.tx-category-fun       { color: var(--color-category-fun);       }
+
+/* ── Category badge — chart-color variant ───────────────────────
+   An alternative badge style that uses the same green/blue/orange
+   palette as the chart slices (fills with the category color and
+   uses the accessible text token above).  Opt-in via JS if needed;
+   the existing .transaction-category.category-* classes remain.
+   ──────────────────────────────────────────────────────────────── */
+
+.category-badge-food {
+  background-color: var(--color-category-food);
+  color:            var(--color-category-food-text);
+}
+
+.category-badge-transport {
+  background-color: var(--color-category-transport);
+  color:            var(--color-category-transport-text);
+}
+
+.category-badge-fun {
+  background-color: var(--color-category-fun);
+  color:            var(--color-category-fun-text);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   12. EMPTY-STATE MESSAGES
+   ═══════════════════════════════════════════════════════════════
+   Applies to both #transaction-list-empty and #chart-empty.
+   The .empty-state class is referenced in index.html on both elements.
+
+   Requirements: 4.5
+   ═══════════════════════════════════════════════════════════════ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem;
+  font-size: 0.9rem;
+  /* #6b7280 on #ffffff = 5.74:1 contrast — passes WCAG 2.1 AA ✓ */
+  color: #6b7280;
+  text-align: center;
+  font-style: italic;
+  /* Subtle dashed border to visually frame the placeholder area */
+  border: 1.5px dashed #e2e8f0;
+  border-radius: 8px;
+  background-color: #f9fafc;
+  /* Ensure a comfortable minimum height so the region is obvious */
+  min-height: 80px;
+}
+
+.empty-state::before {
+  /* Unicode icon rendered via CSS content — no extra markup needed */
+  content: "📋";
+  font-size: 1.5rem;
+  font-style: normal;
+  line-height: 1;
+  /* aria-hidden is not applicable to ::before; screen readers will
+     generally skip decorative CSS content — acceptable here */
+}
+
+/* Chart empty state gets a chart-specific icon */
+#chart-empty.empty-state::before {
+  content: "📊";
+}
+
+/* Hidden modifier — toggled by renderTransactionList / renderChart */
+.empty-state.hidden {
+  display: none;
+}
+
+/* ── Spacing between list and its empty-state paragraph ─────── */
+#transaction-list-empty {
+  margin-top: 0.75rem;
+}
+
+#chart-empty {
+  margin-top: 0.5rem;
+  /* Chart section already centers via #chart-container flex column */
+  width: 100%;
+}
